@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rcalendy - Date Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s, color 0.3s;
+            animation: fadeIn 1s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes moveUpperImage {
+            0% { left: -150px; }
+            100% { left: 100%; } /* Move off screen */
+        }
+        @keyframes moveBackgroundImage {
+            0% { right: -200px; }
+            100% { right: 100%; } /* Move off screen */
+        }
+        .moving-image {
+            position: absolute;
+            top: 20%; /* Adjust vertical position as needed */
+            width: 100px; /* Adjust size as needed */
+            animation: moveUpperImage 10s linear infinite; /* Adjust duration for speed */
+        }
+        h1 {
+            color: #ffdd57;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            font-size: 3em;
+            text-align: center;
+        }
+        .logo {
+            width: 150px; /* Adjust size as needed */
+            margin-bottom: 20px; /* Space below the logo */
+            animation: bounce 1s infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 400px;
+            animation: slideIn 0.5s ease;
+            position: relative; /* For child absolute positioning */
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 16px 60px rgba(0, 0, 0, 0.7);
+        }
+        label {
+            display: block;
+            margin: 15px 0 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #333;
+        }
+        select, input {
+            padding: 15px;
+            border: 2px solid #ffdd57;
+            border-radius: 10px;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1em;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+        select:focus, input:focus {
+            border-color: #ffdd57;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 221, 87, 0.5);
+        }
+        button {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ffdd57;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 48%;
+            margin: 0 1%;
+            font-size: 1em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: relative; /* For the background image */
+            overflow: hidden; /* Prevent overflow from background */
+        }
+        button:hover {
+            background-color: #ffd700;
+            transform: translateY(-2px);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 1.6em;
+            animation: fadeIn 0.5s ease;
+            color: #ffdd57;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #ddd;
+        }
+        /* Light and Dark Mode */
+        body.light-mode {
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            color: #333;
+        }
+        body.dark-mode {
+            background: #333;
+            color: #f0f0f0;
+        }
+        .container.light-mode {
+            background: white;
+        }
+        .container.dark-mode {
+            background: #444;
+        }
+        /* Image for the top left corner */
+        .side-image {
+            position: absolute;
+            left: 20px; /* Position from the left */
+            top: 20px; /* Position from the top */
+            width: 150px; /* Adjust size as needed */
+            display: none; /* Initially hidden */
+        }
+        /* Background moving image */
+        .background-image {
+            position: absolute;
+            top: 50%;
+            right: -200px; /* Start from the right */
+            width: 200px; /* Adjust size as needed */
+            animation: moveBackgroundImage 10s linear infinite; /* Adjust duration for speed */
+        }
+    </style>
+</head>
+<body>
+    <img src="boy.gif" alt="Moving Image" class="moving-image"> <!-- Replace with your moving image URL -->
+    <h1>Caldate</h1>
+    <img src="timer.gif" alt="Rcalendy Logo" class="logo"> <!-- Replace with your logo URL -->
+
+    <img src="girrafe.gif" alt="Side Image" class="side-image" id="sideImage"> <!-- Replace with your side image URL -->
+
+    <div class="container light-mode" id="container">
+        <label for="date">Enter date (AD format: YYYY-MM-DD):</label>
+        <input type="text" id="date" placeholder="YYYY-MM-DD" style="text-align: center;">
+
+        <label for="calendar">Select calendar:</label>
+        <select id="calendar">
+            <option value="">--Select Calendar--</option>
+            <option value="bs">Bikram Sambat (BS)</option>
+            <option value="hijri">Islamic (Hijri)</option>
+            <option value="hebrew">Hebrew</option>
+            <option value="chinese">Chinese Lunar</option>
+            <option value="julian">Julian</option>
+            <option value="sanskrit">Sanskrit</option>
+            <option value="hindu">Hindu Calendar</option>
+        </select>
+
+        <button onclick="convertDate()">Convert</button>
+        <button onclick="clearFields()" aria-label="Clear">Clear</button>
+
+        <h2 id="result"></h2>
+        <button onclick="toggleMode()">Toggle Light/Dark Mode</button>
+
+        <!-- Background moving image -->
+        <img src="girl.gif" alt="Background Image" class="background-image"> <!-- Replace with your background image URL -->
+    </div>
+    
+    <div class="footer">© 2024 Rahul Chaube - All Rights Reserved</div>
+
+    <script>
+        // Show side image function
+        function showSideImage() {
+            const sideImage = document.getElementById('sideImage');
+            sideImage.style.display = 'block';
+            setTimeout(() => {
+                sideImage.style.display = 'none';
+            }, 10000); // Hide after 10 seconds
+        }
+
+        function convertDate() {
+            const inputDate = document.getElementById('date').value;
+            const selectedCalendar = document.getElementById('calendar').value;
+            const resultElement = document.getElementById('result');
+
+            const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!datePattern.test(inputDate)) {
+                resultElement.innerText = 'Invalid date format. Please use YYYY-MM-DD.';
+                resultElement.style.color = 'red';
+                return;
+            }
+
+            const [year, month, day] = inputDate.split('-').map(Number);
+            if (month < 1 || month > 12 || day < 1 || day > 31) {
+                resultElement.innerText = 'Invalid date. Please check the day and month.';
+                resultElement.style.color = 'red';
+                return;
+            }
+
+            let result = '';
+
+            // Conversion Logic
+            switch (selectedCalendar) {
+                case 'bs':
+                    let bsYear = year + 57;
+                    let bsMonth = month >= 4 ? month - 3 : month + 9;
+                    let bsDay = day;
+                    result = `Bikram Sambat (BS): ${bsYear}-${String(bsMonth).padStart(2, '0')}-${String(bsDay).padStart(2, '0')}`;
+                    break;
+                case 'hijri':
+                    let hijriYear = year - 622 + Math.floor((month - 1) / 12); // Rough conversion
+                    result = `Islamic (Hijri): ${hijriYear}-${month}-${day}`;
+                    break;
+                case 'hebrew':
+                    let hebrewYear = year + 3760;
+                    result = `Hebrew: ${hebrewYear}-${month}-${day}`;
+                    break;
+                case 'chinese':
+                    result = `Chinese Lunar: Date conversion logic not implemented.`;
+                    break;
+                case 'julian':
+                    const julianDate = new Date(year, month - 1, day);
+                    julianDate.setDate(julianDate.getDate() - 13);
+                    result = `Julian: ${julianDate.getFullYear()}-${String(julianDate.getMonth() + 1).padStart(2, '0')}-${String(julianDate.getDate()).padStart(2, '0')}`;
+                    break;
+                case 'sanskrit':
+                    result = `Sanskrit: Date conversion logic not implemented.`;
+                    break;
+                case 'hindu':
+                    let hinduYear = year + 57;
+                    result = `Hindu Calendar: ${hinduYear}-${month}-${day}`; // Rough conversion
+                    break;
+                default:
+                    result = 'Please select a calendar to convert to.';
+            }
+
+            resultElement.innerText = result;
+            resultElement.style.color = '#ffdd57';
+
+            // Show the side image
+            showSideImage();
+        }
+
+        function clearFields() {
+            document.getElementById('date').value = '';
+            document.getElementById('calendar').value = '';
+            document.getElementById('result').innerText = '';
+            document.getElementById('sideImage').style.display = 'none'; // Hide side image when fields are cleared
+        }
+
+        function toggleMode() {
+            const body = document.body;
+            const container = document.getElementById('container');
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            container.classList.toggle('dark-mode');
+            container.classList.toggle('light-mode');
+        }
+    </script>
+</body>
+</html>
